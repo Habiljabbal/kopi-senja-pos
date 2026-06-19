@@ -4,6 +4,15 @@ Kopi Senja adalah prototipe aplikasi berbasis web untuk sistem pemesanan mandiri
 
 Proyek ini dibangun murni di sisi *frontend* menggunakan arsitektur *Simulated Centralized Database* memanfaatkan browser storage. Sangat cocok digunakan untuk keperluan demonstrasi portofolio atau presentasi produk pada satu perangkat.
 
+## 🔗 Live Demo & Tautan Akses
+
+Karena proyek ini dideploy menggunakan GitHub Pages, Anda dapat langsung menguji coba sistem *Point of Sale* (POS) mandiri ini melalui tautan di bawah:
+
+* **Halaman Menu Pelanggan:** `https://username-kamu.github.io/kopi-senja-pos/public/index.html`
+* **Halaman Login Staf:** `https://username-kamu.github.io/kopi-senja-pos/public/login.html`
+
+> ⚠️ **Catatan Penting untuk Uji Coba:** Untuk melihat simulasi sinkronisasi data secara *real-time*, silakan buka kedua link di atas secara bersamaan pada satu browser menggunakan metode *split-screen* (sandingkan jendela kanan dan kiri).
+
 ---
 
 ## 🚀 Fitur Utama

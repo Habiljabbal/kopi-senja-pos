@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Kasir - Kopi Senja</title>
+    <link rel="stylesheet" href="./output.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        // Proteksi sederhana bypass login
+        if (sessionStorage.getItem('isLoggedIn') !== 'true' || sessionStorage.getItem('role') !== 'kasir') {
+            alert('🔒 Akses Ditolak! Anda harus login.');
+            window.location.href = 'login.html';
+        }
+    </script>
+</head>
+<body class="bg-gray-100 min-h-screen p-6 font-sans">
+
+    <div class="max-w-4xl mx-auto flex justify-between items-center mb-6 bg-white px-6 py-3 rounded-2xl shadow-xs border border-gray-200">
+        <div class="flex items-center gap-3">
+            <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+            <h1 class="font-bold text-gray-800 text-sm"><i class="fa-solid fa-cash-register mr-1 text-coffee-800"></i> MODE KASIR AKTIF</h1>
+        </div>
+        <button onclick="logoutStaf()" class="text-xs font-bold text-red-600 bg-red-50 px-3 py-1.5 rounded-xl">Keluar</button>
+    </div>
+
+    <div class="max-w-4xl mx-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            <div class="bg-white p-5 rounded-2xl border border-gray-200 flex items-center gap-4">
+                <div class="w-12 h-12 bg-emerald-100 text-emerald-800 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-wallet"></i></div>
+                <div>
+                    <span class="text-[10px] uppercase font-bold text-gray-400">Total Omzet Kafe</span>
+                    <h3 id="cashierRevenue" class="text-xl font-extrabold text-gray-800">Rp 0</h3>
+                </div>
+            </div>
+            <div class="bg-white p-5 rounded-2xl border border-gray-200 flex items-center gap-4">
+                <div class="w-12 h-12 bg-amber-100 text-amber-800 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                <div>
+                    <span class="text-[10px] uppercase font-bold text-gray-400">Menunggu Validasi</span>
+                    <h3 id="cashierPendingCount" class="text-xl font-extrabold text-gray-800">0 Transaksi</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+            <h2 class="text-base font-bold text-gray-800 mb-4">Arus Validasi Pembayaran</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                        <tr class="border-b border-gray-200 text-gray-400 uppercase">
+                            <th class="py-3 px-2">Meja / Nama</th>
+                            <th class="py-3 px-2">Total Transaksi</th>
+                            <th class="py-3 px-2">Metode</th>
+                            <th class="py-3 px-2">Status Pembayaran</th>
+                            <th class="py-3 px-2 text-center">Aksi Kasir</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cashierOrderTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function renderKasir() {
+            let databasePesanan = JSON.parse(localStorage.getItem('databasePesanan')) || [];
+            let totalOmzetLunas = parseInt(localStorage.getItem('omzetKafe')) || 0;
+            const tableBody = document.getElementById('cashierOrderTable');
+            if(!tableBody) return;
+            tableBody.innerHTML = '';
+            let pendingCount = 0;
+
+            databasePesanan.forEach(order => {
+                if(order.statusPembayaran === "Belum Diverifikasi") pendingCount++;
+                let badgeColor = order.statusPembayaran === "Lunas / QRIS Sukses" ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800";
+                
+                tableBody.innerHTML += `
+                    <tr class="border-b border-gray-100">
+                        <td class="py-3 px-2 font-bold">Meja ${order.nomorMeja}<br><span class="text-[10px] text-gray-400">${order.namaPelanggan}</span></td>
+                        <td class="py-3 px-2 font-extrabold text-amber-700">Rp ${order.total.toLocaleString('id-ID')}</td>
+                        <td class="py-3 px-2"><span class="px-2 py-0.5 rounded bg-gray-100 font-semibold text-[10px]">${order.metode}</span></td>
+                        <td class="py-3 px-2"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${badgeColor}">${order.statusPembayaran}</span></td>
+                        <td class="py-3 px-2 text-center">
+                            ${order.statusPembayaran !== "Lunas / QRIS Sukses" ? `
+                                <button onclick="konfirmasiUangMasuk('${order.idOrder}')" class="bg-emerald-600 text-white font-bold text-[10px] px-3 py-1 rounded-lg">
+                                    ✓ Validasi Uang
+                                </button>
+                            ` : `<span class="text-emerald-600 font-bold">✓ Dana Masuk</span>`}
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('cashierRevenue').innerText = `Rp ${totalOmzetLunas.toLocaleString('id-ID')}`;
+            document.getElementById('cashierPendingCount').innerText = `${pendingCount} Transaksi`;
+        }
+
+        function konfirmasiUangMasuk(idOrder) {
+            let databasePesanan = JSON.parse(localStorage.getItem('databasePesanan')) || [];
+            let totalOmzetLunas = parseInt(localStorage.getItem('omzetKafe')) || 0;
+            const idx = databasePesanan.findIndex(o => o.idOrder === idOrder);
+            
+            if (idx !== -1) {
+                databasePesanan[idx].statusPembayaran = "Lunas / QRIS Sukses";
+                totalOmzetLunas += databasePesanan[idx].total;
+                
+                localStorage.setItem('databasePesanan', JSON.stringify(databasePesanan));
+                localStorage.setItem('omzetKafe', totalOmzetLunas);
+                renderKasir();
+            }
+        }
+
+        function logoutStaf() { sessionStorage.clear(); window.location.href = 'login.html'; }
+        setInterval(renderKasir, 2000); // Sinkronisasi otomatis setiap 2 detik
+        renderKasir();
+    </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@theme {
+  /* Warna kustom bertema kafe hangat */
+  --color-coffee-50: #fdfbf7;
+  --color-coffee-100: #f3efe6;
+  --color-coffee-800: #4c3721;
+  --color-coffee-950: #1d120b;
+  
+  --color-accent-gold: #d97706;
+}
+
+/* Sembunyikan scrollbar bawaan browser agar UI mobile mulus */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kopi Senja - Menu Pelanggan ☕</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="./output.css">
+</head>
+<body class="bg-gray-100 min-h-screen pb-20 font-sans">
+
+    <div id="viewCustomer" class="max-w-md mx-auto bg-coffee-50 shadow-2xl min-h-[90vh] relative pb-24">
+        <header class="bg-gradient-to-b from-coffee-950 to-coffee-800 text-white p-6 rounded-b-[2rem] shadow-lg">
+            <div class="flex justify-between items-start">
+                <div>
+                    <span class="text-xs text-gray-400 uppercase tracking-widest font-bold">Selamat Datang di</span>
+                    <h1 class="text-2xl font-bold mt-0.5 text-white">☕ Kopi Senja</h1>
+                </div>
+                <div class="bg-coffee-950/50 border border-coffee-800 px-3 py-1.5 rounded-xl text-center">
+                    <span class="block text-[9px] uppercase text-gray-400">Scan QR</span>
+                    <span class="text-sm font-bold text-accent-gold">Meja 04</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="px-4 mt-6">
+            <div class="flex gap-2 overflow-x-auto no-scrollbar">
+                <button onclick="filterMenu('semua')" class="bg-coffee-950 text-white text-xs font-bold px-4 py-2 rounded-full whitespace-nowrap shadow-sm">⚡ Semua</button>
+                <button onclick="filterMenu('makanan')" class="bg-white border border-gray-200 text-xs font-bold px-4 py-2 rounded-full whitespace-nowrap text-gray-600">🍔 Makanan</button>
+                <button onclick="filterMenu('minuman')" class="bg-white border border-gray-200 text-xs font-bold px-4 py-2 rounded-full whitespace-nowrap text-gray-600">☕ Minuman</button>
+            </div>
+        </div>
+
+        <main class="px-4 mt-6">
+            <div id="menuContainer" class="grid grid-cols-1 gap-4"></div>
+        </main>
+
+        <div id="cartBar" class="hidden fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-100 p-4 shadow-lg rounded-t-2xl z-40">
+            <div class="flex justify-between items-center bg-coffee-950 text-white rounded-xl p-3.5 cursor-pointer" onclick="toggleCheckoutModal(true)">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-basket-shopping text-accent-gold"></i>
+                    <div>
+                        <span id="cartCount" class="text-xs block text-gray-400">0 Item terpilih</span>
+                        <span id="cartTotal" class="text-sm font-bold">Rp 0</span>
+                    </div>
+                </div>
+                <span class="text-xs font-bold bg-white/10 px-3 py-1.5 rounded-lg">Lanjut <i class="fa-solid fa-chevron-right ml-1"></i></span>
+            </div>
+        </div>
+    </div>
+
+    <div id="checkoutModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end justify-center">
+        <div class="bg-white w-full max-w-md rounded-t-3xl p-6 max-h-[85vh] overflow-y-auto shadow-2xl">
+            <div class="flex justify-between items-center border-b border-gray-100 pb-3 mb-4">
+                <h3 class="font-bold text-base"><i class="fa-solid fa-receipt mr-2 text-coffee-800"></i>Detail Pesanan</h3>
+                <button onclick="toggleCheckoutModal(false)" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div id="summaryItems" class="space-y-3 mb-4 text-sm text-gray-600"></div>
+            <hr class="border-gray-100 my-4">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nama Pemesan</label>
+                    <input type="text" id="inputNama" placeholder="Masukkan nama kamu..." class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-coffee-800">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nomor Meja</label>
+                    <input type="number" id="inputMeja" value="4" placeholder="Nomor meja..." class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-bold focus:outline-none focus:border-coffee-800">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Metode Pembayaran</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="border border-gray-200 rounded-xl p-3 flex items-center gap-2 cursor-pointer hover:bg-gray-50">
+                            <input type="radio" name="payment" value="QRIS" checked class="accent-coffee-800">
+                            <span class="text-xs font-medium"><i class="fa-solid fa-qrcode mr-1 text-blue-600"></i> QRIS</span>
+                        </label>
+                        <label class="border border-gray-200 rounded-xl p-3 flex items-center gap-2 cursor-pointer hover:bg-gray-50">
+                            <input type="radio" name="payment" value="Tunai" class="accent-coffee-800">
+                            <span class="text-xs font-medium"><i class="fa-solid fa-money-bill-wave mr-1 text-emerald-600"></i> Tunai</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <button onclick="prosesCheckoutDatabase()" class="w-full bg-coffee-950 text-white font-bold py-3.5 rounded-xl mt-6 shadow-md hover:bg-coffee-800 transition text-sm">
+                🚀 Konfirmasi & Bayar Sekarang
+            </button>
+        </div>
+    </div>
+
+    <div id="qrisModal" class="hidden fixed inset-0 z-50 bg-gray-900/60 backdrop-blur-md flex items-center justify-center p-4 transition-all duration-300">
+    <div class="bg-white rounded-3xl w-full max-w-xs p-6 shadow-2xl text-center border border-gray-100 transform scale-100 transition-transform">
+        
+        <div class="flex justify-between items-center border-b border-gray-100 pb-3 mb-4">
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+                <span class="text-xs font-extrabold tracking-wider text-gray-500 uppercase">Pembayaran QRIS</span>
+            </div>
+            <button onclick="closeQrisModal()" class="w-6 h-6 rounded-full bg-gray-50 text-gray-400 hover:text-gray-600 hover:bg-gray-100 flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark text-xs"></i>
+            </button>
+        </div>
+
+        <div class="my-2">
+            <span class="text-[10px] text-gray-400 uppercase font-bold tracking-wide">Total Tagihan</span>
+            <p id="qrisTotalText" class="text-2xl font-black text-coffee-950 tracking-tight mt-0.5">Rp 0</p>
+        </div>
+
+        <div class="relative bg-gradient-to-tr from-gray-50 to-gray-100/50 p-4 rounded-2xl inline-block my-4 border border-gray-100 shadow-inner group">
+            <img class="w-44 h-44 mx-auto rounded-lg mix-blend-multiply transition-transform group-hover:scale-102" 
+                 src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=KopiSenja" alt="QRIS Code">
+            <div class="absolute inset-2 pointer-events-none border-2 border-transparent group-hover:border-coffee-800/20 rounded-xl transition-all"></div>
+        </div>
+
+        <div class="bg-amber-50/70 border border-amber-200/60 rounded-xl p-3 text-left mt-2 flex items-start gap-3">
+            <div class="flex items-center justify-center mt-0.5">
+                <svg class="animate-spin h-3.5 w-3.5 text-amber-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <span class="block text-[11px] font-bold text-amber-900 leading-tight">Menunggu Verifikasi</span>
+                <span class="block text-[10px] text-amber-700/80 mt-0.5 font-medium">Sistem sedang mengecek dana masuk dari kasir secara otomatis...</span>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+    <script src="./app.js"></script>
+</body>
+</html>

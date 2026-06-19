@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Staf - Kopi Senja</title>
+    <link rel="stylesheet" href="./output.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-coffee-950 to-coffee-800 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-sm border border-gray-100">
+        <div class="text-center mb-6">
+            <span class="text-3xl">☕</span>
+            <h2 class="text-xl font-black text-coffee-950 mt-2">Sistem internal Kopi Senja</h2>
+            <p class="text-xs text-gray-400 mt-1">Silakan masuk menggunakan akun staf Anda</p>
+        </div>
+
+        <form id="loginForm" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Username / ID Staf</label>
+                <input type="text" id="username" placeholder="Masukkan ID (contoh: kasir1 / dapur1)" required
+                       class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-coffee-800">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Password PIN</label>
+                <input type="password" id="password" placeholder="Masukkan PIN password" required
+                       class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-coffee-800">
+            </div>
+            <button type="submit" class="w-full bg-coffee-950 hover:bg-coffee-900 text-white font-bold py-3.5 rounded-xl transition text-sm shadow-md">
+                <i class="fa-solid fa-right-to-bracket mr-1"></i> Masuk ke Dashboard
+            </button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value;
+
+            // Simulasi Akun Database Internal
+            if (user === 'kasir1' && pass === '1234') {
+                sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('role', 'kasir');
+                window.location.href = 'kasir.html';
+            } else if (user === 'dapur1' && pass === '5678') {
+                sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('role', 'dapur');
+                window.location.href = 'dapur.html';
+            } else {
+                alert('❌ Username atau Password Staf Salah! \n(Gunakan kasir1/1234 atau dapur1/5678 untuk demo)');
+            }
+        });
+    </script>
+</body>
+</html>
